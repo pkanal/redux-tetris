@@ -1,5 +1,7 @@
 // @flow
 import React from 'react';
+import { connect } from 'react-redux';
+
 import './app.css';
 
 type Tile = {
@@ -24,4 +26,8 @@ const App = ({
   );
 }
 
-export default App;
+const mapStateToProps = state => ({
+  tiles: state.tiles
+});
+
+export default connect(mapStateToProps)(App);

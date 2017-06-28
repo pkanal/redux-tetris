@@ -1,12 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+
 import App from './containers/app';
 import registerServiceWorker from './registerServiceWorker';
-import { createGrid, initializeGrid, convertGridToTiles } from './utils/grid';
+import configureStore from './store/configure-store';
 
-const INITIAL_GRID = initializeGrid(createGrid(10, 22));
+const store = configureStore()
 
-const tiles = convertGridToTiles(INITIAL_GRID);
-
-ReactDOM.render(<App tiles={ tiles } />, document.getElementById('root'));
+ReactDOM.render(
+  <Provider store={ store }>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
 registerServiceWorker();
