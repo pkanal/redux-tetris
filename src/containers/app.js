@@ -1,9 +1,6 @@
 import React from 'react';
 import './app.css';
 
-import O from '../components/o';
-import I from '../components/i';
-
 const App = ({
   tiles,
 }) => {

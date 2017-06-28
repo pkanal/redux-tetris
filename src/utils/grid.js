@@ -1,3 +1,14 @@
+// @flow
+import R from 'ramda';
+
+type Cell = {
+  type?: string,
+}
+
+type Row = Cell[];
+
+type Grid = Row[];
+
 const PIECE_TYPES = {
   I: 'i',
 }
@@ -20,15 +31,16 @@ const PIECE_INIT_COORDS = {
 
 const PIECE_COLOURS = {
   [PIECE_TYPES.I]: '#81CFE0',
+  default: 'red',
 };
 
-export const createGrid = (x, y) => (
-  [...Array(y)].map(row => [...Array(x)].map(value => null))
+export const createGrid = (x: number, y: number) => (
+  [...Array(y)].map(row => [...Array(x)].map(value => ({})))
 );
 
-export const initializeGrid = (grid, type = PIECE_TYPES.I) =>
-  grid.map((y, yIndex) =>
-  y.map((x, xIndex) => {
+export const initializeGrid = (grid: Grid, type: string = PIECE_TYPES.I) =>
+  grid.map((y: Row, yIndex: number) =>
+  y.map((x: Cell, xIndex: number) => {
   const shouldConvertTile = PIECE_INIT_COORDS[type].filter(
     coords => coords.x === xIndex && coords.y === yIndex
   ).length > 0;
@@ -36,10 +48,11 @@ export const initializeGrid = (grid, type = PIECE_TYPES.I) =>
   return shouldConvertTile ? { type } : x;
 }));
 
-export const convertGridToTiles = grid => grid.reduce((acc, y, yIndex) => {
-  return [...acc, ...y.filter((x, xIndex) => x).map((x, xIndex) => ({
+export const convertGridToTiles = (grid: Grid) =>
+  grid.reduce((acc, y: Row, yIndex: number) => {
+  return [...acc, ...y.filter((x: Cell, xIndex: number) => !R.isEmpty(x)).map((x: Cell, xIndex: number) => ({
     x: xIndex + 1,
     y: yIndex + 1,
-    colour: PIECE_COLOURS[x.type],
+    colour: PIECE_COLOURS[x.type ? x.type : 'default'],
   }))];
 }, []);
