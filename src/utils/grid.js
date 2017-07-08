@@ -1,13 +1,11 @@
 // @flow
 import R from 'ramda';
 
-type Cell = {
-  type?: string,
-}
-
-type Row = Cell[];
-
-type Grid = Row[];
+import type {
+  Cell,
+  Row,
+  Grid
+} from '../types';
 
 const PIECE_TYPES = {
   I: 'i',
@@ -27,6 +25,7 @@ const PIECE_INIT_COORDS = {
     x: 0,
     y: 3
   }],
+  empty: [],
 };
 
 const PIECE_COLOURS = {
@@ -38,7 +37,7 @@ export const createGrid = (x: number, y: number) => (
   [...Array(y)].map(row => [...Array(x)].map(value => ({})))
 );
 
-export const initializeGrid = (grid: Grid, type: string = PIECE_TYPES.I) =>
+export const initializeGrid = (grid: Grid, type: string = 'empty') =>
   grid.map((y: Row, yIndex: number) =>
   y.map((x: Cell, xIndex: number) => {
   const shouldConvertTile = PIECE_INIT_COORDS[type].filter(

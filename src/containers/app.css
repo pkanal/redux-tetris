@@ -1,12 +1,22 @@
 .container {
   width: 100%;
   height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .tetris-grid {
   display: grid;
-  grid-template-columns: repeat(10, 40px);
-  grid-template-rows: repeat(22, 40px);
-  width: 400px;
+  grid-template-columns: repeat(10, 30px);
+  grid-template-rows: repeat(22, 30px);
+  width: 300px;
   background: rgba(236, 240, 241, 0.85);
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.start-game-overlay {
+  grid-column: 1 / 4;
+  grid-row: 1;
+  background-color: black;
 }
