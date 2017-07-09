@@ -14,7 +14,15 @@ export type Tile = {
   colour: string,
 };
 
+export type Tiles = Tile[];
+
+export type GameState =
+  | 'not-started'
+  | 'in-progress'
+  | 'paused'
+  | 'over'
+
 export type Action = {
   type: string,
-  payload: {},
-}
+  payload: Object,
+};

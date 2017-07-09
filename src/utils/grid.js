@@ -7,7 +7,7 @@ import type {
   Grid
 } from '../types';
 
-const PIECE_TYPES = {
+export const PIECE_TYPES = {
   I: 'i',
 }
 
@@ -55,3 +55,30 @@ export const convertGridToTiles = (grid: Grid) =>
     colour: PIECE_COLOURS[x.type ? x.type : 'default'],
   }))];
 }, []);
+
+const getActiveCells = (grid: Grid) =>
+  grid.reduce((acc, y: Row, yIndex: number) => {
+  return [...acc, ...y.filter((x: Cell, xIndex: number) => !R.isEmpty(x)).map((x: Cell, xIndex: number) => ({
+    x: xIndex,
+    y: yIndex,
+  }))];
+}, []);
+
+const setActiveCells = (grid: Grid, cells, type) =>
+  grid.map((y: Row, yIndex: number) =>
+  y.map((x: Cell, xIndex: number) => {
+  const shouldConvertTile = cells.filter(
+    coords => coords.x === xIndex && coords.y === yIndex
+  ).length > 0;
+
+  return shouldConvertTile ? { type } : {};
+  }));
+
+export const movePiece = (grid: Grid) => {
+  const activeCells = getActiveCells(grid).map(cell => ({
+    x: cell.x,
+    y: cell.y + 1
+  }));
+
+  return setActiveCells(grid, activeCells, 'i');
+};

@@ -2,28 +2,41 @@
 import { combineReducers } from 'redux';
 
 import { convertGridToTiles } from '../utils/grid';
-import type {
-  Action,
-} from '../types';
 import {
   INITIAL_GRID,
   GAME_STATES,
 } from '../constants';
-import { START_GAME } from '../actions';
+import { START_GAME, UPDATE_GRID, UPDATE_TILES } from '../actions';
+
+import type {
+  GameState,
+  Action,
+  Grid,
+  Tiles,
+} from '../types';
 
 
-type GameState =
-  | 'not-started'
-  | 'in-progress'
-  | 'paused'
-  | 'over'
 
 const INITIAL_STATE = {
   tiles: convertGridToTiles(INITIAL_GRID),
   gameState: GAME_STATES.NOT_STARTED,
 };
 
-const tiles = (state = INITIAL_STATE.tiles, action: Action) => state;
+const grid = (state: Grid = INITIAL_GRID, action: Action) => {
+  if (action.type === UPDATE_GRID) {
+    return action.payload.grid;
+  }
+
+  return state;
+};
+
+const tiles = (state: Tiles = INITIAL_STATE.tiles, action: Action) => {
+  if (action.type === UPDATE_TILES) {
+    return action.payload.tiles;
+  }
+
+  return state;
+};
 
 const gameState = (state: GameState = INITIAL_STATE.gameState, action: Action) => {
   switch(action.type) {
@@ -37,4 +50,5 @@ const gameState = (state: GameState = INITIAL_STATE.gameState, action: Action) =
 export default combineReducers({
   tiles,
   gameState,
+  grid,
 });

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import 'rxjs';
 
 import App from './containers/app';
 import registerServiceWorker from './registerServiceWorker';
