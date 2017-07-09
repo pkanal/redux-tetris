@@ -1,4 +1,4 @@
-import { createGrid, initializeGrid, convertGridToTiles } from './grid';
+import { createGrid, initializeGrid, convertGridToTiles, movePiece } from './grid';
 
 describe('grid utils tests', () => {
   describe('create x by y array', () => {
@@ -23,7 +23,7 @@ describe('grid utils tests', () => {
       [{}, {}, {}, {}, {}],
     ];
     it('should initialize with i piece', () => {
-      const actual = initializeGrid(grid);
+      const actual = initializeGrid(grid, 'i');
       const expected = [
         [{ type: 'i'}, {}, {}, {}, {}],
         [{ type: 'i'}, {}, {}, {}, {}],
@@ -66,6 +66,30 @@ describe('grid utils tests', () => {
         y: 4,
         colour: '#81CFE0',
       }];
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('move piece down a tile', () => {
+    it('should move a piece down', () => {
+      const grid = [
+        [{ type: 'i'}, {}, {}, {}, {}],
+        [{ type: 'i'}, {}, {}, {}, {}],
+        [{ type: 'i'}, {}, {}, {}, {}],
+        [{ type: 'i'}, {}, {}, {}, {}],
+        [{}, {}, {}, {}, {}],
+        [{}, {}, {}, {}, {}],
+      ];
+      const actual = movePiece(grid);
+      const expected = [
+        [{}, {}, {}, {}, {}],
+        [{ type: 'i'}, {}, {}, {}, {}],
+        [{ type: 'i'}, {}, {}, {}, {}],
+        [{ type: 'i'}, {}, {}, {}, {}],
+        [{ type: 'i'}, {}, {}, {}, {}],
+        [{}, {}, {}, {}, {}],
+      ];
 
       expect(actual).toEqual(expected);
     });

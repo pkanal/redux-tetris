@@ -1,16 +1,54 @@
-import { combineReducers } from 'redux'
-import { createGrid, initializeGrid, convertGridToTiles } from '../utils/grid';
+// @flow
+import { combineReducers } from 'redux';
 
-const INITIAL_GRID = initializeGrid(createGrid(10, 22));
+import { convertGridToTiles } from '../utils/grid';
+import {
+  INITIAL_GRID,
+  GAME_STATES,
+} from '../constants';
+import { START_GAME, UPDATE_GRID, UPDATE_TILES } from '../actions';
 
-// const tiles = convertGridToTiles(INITIAL_GRID);
+import type {
+  GameState,
+  Action,
+  Grid,
+  Tiles,
+} from '../types';
+
+
 
 const INITIAL_STATE = {
   tiles: convertGridToTiles(INITIAL_GRID),
+  gameState: GAME_STATES.NOT_STARTED,
 };
 
-const tiles = (state = INITIAL_STATE.tiles, action) => state;
+const grid = (state: Grid = INITIAL_GRID, action: Action) => {
+  if (action.type === UPDATE_GRID) {
+    return action.payload.grid;
+  }
+
+  return state;
+};
+
+const tiles = (state: Tiles = INITIAL_STATE.tiles, action: Action) => {
+  if (action.type === UPDATE_TILES) {
+    return action.payload.tiles;
+  }
+
+  return state;
+};
+
+const gameState = (state: GameState = INITIAL_STATE.gameState, action: Action) => {
+  switch(action.type) {
+    case START_GAME:
+      return action.payload.gameState;
+    default:
+      return state;
+  }
+};
 
 export default combineReducers({
   tiles,
+  gameState,
+  grid,
 });

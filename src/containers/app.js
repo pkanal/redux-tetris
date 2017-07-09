@@ -2,32 +2,29 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import Grid from './grid';
 import './app.css';
-
-type Tile = {
-  x: number,
-  y: number,
-  colour: string,
-};
-
-type Props = {
-  tiles: Tile[],
-};
+import { GAME_STATES } from '../constants';
+import { startGame } from '../actions';
 
 const App = ({
-  tiles,
-}: Props) => {
+  gameState,
+  startGame,
+}) => {
   return (
     <div className='container'>
-      <div className='tetris-grid'>
-        {tiles.map(tile => <div style={{ gridColumn: tile.x, gridRow: tile.y, background: tile.colour}}></div>)}
-      </div>
+      <Grid />
+      { gameState === GAME_STATES.NOT_STARTED && <div className='start-game-overlay'><button onClick={ startGame }>Start!</button></div> }
     </div>
   );
 }
 
 const mapStateToProps = state => ({
-  tiles: state.tiles
+  gameState: state.gameState,
 });
 
-export default connect(mapStateToProps)(App);
+const actions = {
+  startGame
+};
+
+export default connect(mapStateToProps, actions)(App);
