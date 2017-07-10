@@ -3,18 +3,34 @@ import { combineEpics } from 'redux-observable';
 import { concat as concat$ } from 'rxjs/observable/concat';
 import { of as of$ } from 'rxjs/observable/of';
 
-import { START_GAME, UPDATE_GRID, MOVE_CURRENT_PIECE, STOP_CURRENT_PIECE, updateGrid, updateTiles, moveCurrentPiece, stopCurrentPiece } from '../actions';
-import { initializeGrid, PIECE_TYPES, convertGridToTiles, movePiece, shouldPieceBecomeInactive } from '../utils/grid';
+import {
+  START_GAME,
+  UPDATE_GRID,
+  MOVE_CURRENT_PIECE,
+  STOP_CURRENT_PIECE,
+  updateGrid,
+  updateTiles,
+  moveCurrentPiece,
+  stopCurrentPiece,
+} from '../actions';
+import {
+  initializeGrid,
+  PIECE_TYPES,
+  convertGridToTiles,
+  movePiece,
+  shouldPieceBecomeInactive,
+} from '../utils/grid';
+
+const dispatchAll = actions => concat$(...actions.map(action => of$(action)));
 
 const startGameEpic = ($action, store) =>
   $action.ofType(START_GAME)
   .flatMap(() => {
     const grid = store.getState().grid;
-
-    return concat$(
-      of$(updateGrid(initializeGrid(grid, PIECE_TYPES.I))),
-      of$(moveCurrentPiece()),
-    )
+    return dispatchAll([
+      updateGrid(initializeGrid(grid, PIECE_TYPES.I)),
+      moveCurrentPiece()
+    ])
   })
 
 const updateGridEpic = $action =>
@@ -30,15 +46,14 @@ const moveCurrentPieceEpic = ($action, store) =>
     const updatedGrid = movePiece(store.getState().grid);
     const actionsToDispatch = shouldPieceBecomeInactive(updatedGrid) ?
     [
-      of$(updateGrid(updatedGrid)),
-      of$(moveCurrentPiece()),
-      of$(stopCurrentPiece()),
+      updateGrid(updatedGrid),
+      moveCurrentPiece(),
+      stopCurrentPiece(),
     ] : [
-      of$(updateGrid(updatedGrid)),
-      of$(moveCurrentPiece()),
+      updateGrid(updatedGrid),
+      moveCurrentPiece(),
     ]
-    console.log(actionsToDispatch);
-    return concat$(...actionsToDispatch);
+    return dispatchAll(actionsToDispatch)
   })
   .takeUntil($action.ofType(STOP_CURRENT_PIECE));
 
