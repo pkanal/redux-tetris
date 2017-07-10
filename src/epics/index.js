@@ -3,8 +3,8 @@ import { combineEpics } from 'redux-observable';
 import { concat as concat$ } from 'rxjs/observable/concat';
 import { of as of$ } from 'rxjs/observable/of';
 
-import { START_GAME, UPDATE_GRID, MOVE_CURRENT_PIECE, updateGrid, updateTiles, moveCurrentPiece } from '../actions';
-import { initializeGrid, PIECE_TYPES, convertGridToTiles, movePiece } from '../utils/grid';
+import { START_GAME, UPDATE_GRID, MOVE_CURRENT_PIECE, STOP_CURRENT_PIECE, updateGrid, updateTiles, moveCurrentPiece, stopCurrentPiece } from '../actions';
+import { initializeGrid, PIECE_TYPES, convertGridToTiles, movePiece, shouldPieceBecomeInactive } from '../utils/grid';
 
 const startGameEpic = ($action, store) =>
   $action.ofType(START_GAME)
@@ -28,11 +28,19 @@ const moveCurrentPieceEpic = ($action, store) =>
   .delay(1000)
   .flatMap(() => {
     const updatedGrid = movePiece(store.getState().grid);
-    return concat$(
+    const actionsToDispatch = shouldPieceBecomeInactive(updatedGrid) ?
+    [
       of$(updateGrid(updatedGrid)),
       of$(moveCurrentPiece()),
-    )
-  });
+      of$(stopCurrentPiece()),
+    ] : [
+      of$(updateGrid(updatedGrid)),
+      of$(moveCurrentPiece()),
+    ]
+    console.log(actionsToDispatch);
+    return concat$(...actionsToDispatch);
+  })
+  .takeUntil($action.ofType(STOP_CURRENT_PIECE));
 
 
 export default combineEpics(

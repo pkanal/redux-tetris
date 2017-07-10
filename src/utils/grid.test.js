@@ -1,4 +1,10 @@
-import { createGrid, initializeGrid, convertGridToTiles, movePiece } from './grid';
+import {
+  createGrid,
+  initializeGrid,
+  convertGridToTiles,
+  movePiece,
+  shouldPieceBecomeInactive,
+} from './grid';
 
 describe('grid utils tests', () => {
   describe('create x by y array', () => {
@@ -25,10 +31,10 @@ describe('grid utils tests', () => {
     it('should initialize with i piece', () => {
       const actual = initializeGrid(grid, 'i');
       const expected = [
-        [{ type: 'i'}, {}, {}, {}, {}],
-        [{ type: 'i'}, {}, {}, {}, {}],
-        [{ type: 'i'}, {}, {}, {}, {}],
-        [{ type: 'i'}, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
         [{}, {}, {}, {}, {}],
         [{}, {}, {}, {}, {}],
       ];
@@ -39,10 +45,10 @@ describe('grid utils tests', () => {
 
   describe('convert grid to tiles for display', () => {
     const grid = [
-      [{ type: 'i'}, {}, {}, {}, {}],
-      [{ type: 'i'}, {}, {}, {}, {}],
-      [{ type: 'i'}, {}, {}, {}, {}],
-      [{ type: 'i'}, {}, {}, {}, {}],
+      [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+      [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+      [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+      [{ type: 'i', isActive: true }, {}, {}, {}, {}],
       [{}, {}, {}, {}, {}],
       [{}, {}, {}, {}, {}],
     ];
@@ -74,24 +80,54 @@ describe('grid utils tests', () => {
   describe('move piece down a tile', () => {
     it('should move a piece down', () => {
       const grid = [
-        [{ type: 'i'}, {}, {}, {}, {}],
-        [{ type: 'i'}, {}, {}, {}, {}],
-        [{ type: 'i'}, {}, {}, {}, {}],
-        [{ type: 'i'}, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
         [{}, {}, {}, {}, {}],
         [{}, {}, {}, {}, {}],
       ];
       const actual = movePiece(grid);
       const expected = [
         [{}, {}, {}, {}, {}],
-        [{ type: 'i'}, {}, {}, {}, {}],
-        [{ type: 'i'}, {}, {}, {}, {}],
-        [{ type: 'i'}, {}, {}, {}, {}],
-        [{ type: 'i'}, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
         [{}, {}, {}, {}, {}],
       ];
 
       expect(actual).toEqual(expected);
     });
+  });
+
+  describe('check if current piece should become inactive', () => {
+    it('should detect if a piece has hit the bottom', () => {
+      const grid = [
+        [{}, {}, {}, {}, {}],
+        [{}, {}, {}, {}, {}],
+        [{}, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, { type: 'i', isActive: true }, {}, {}, {}],
+      ];
+      const actual = shouldPieceBecomeInactive(grid);
+
+      expect(actual).toEqual(true);
+    });
+
+    it('should return false if the piece is not about to hit anything', () => {
+      const grid = [
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{ type: 'i', isActive: true }, {}, {}, {}, {}],
+        [{}, {}, {}, {}, {}],
+        [{}, {}, {}, {}, {}],
+      ];
+      const actual = shouldPieceBecomeInactive(grid);
+
+      expect(actual).toEqual(false);
+    })
   });
 });

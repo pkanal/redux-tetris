@@ -44,7 +44,7 @@ export const initializeGrid = (grid: Grid, type: string = 'empty') =>
     coords => coords.x === xIndex && coords.y === yIndex
   ).length > 0;
 
-  return shouldConvertTile ? { type } : x;
+  return shouldConvertTile ? { type, isActive: true } : x;
 }));
 
 export const convertGridToTiles = (grid: Grid) =>
@@ -58,7 +58,7 @@ export const convertGridToTiles = (grid: Grid) =>
 
 const getActiveCells = (grid: Grid) =>
   grid.reduce((acc, y: Row, yIndex: number) => {
-  return [...acc, ...y.filter((x: Cell, xIndex: number) => !R.isEmpty(x)).map((x: Cell, xIndex: number) => ({
+  return [...acc, ...y.filter((x: Cell, xIndex: number) => x.isActive).map((x: Cell, xIndex: number) => ({
     x: xIndex,
     y: yIndex,
   }))];
@@ -71,7 +71,7 @@ const setActiveCells = (grid: Grid, cells, type) =>
     coords => coords.x === xIndex && coords.y === yIndex
   ).length > 0;
 
-  return shouldConvertTile ? { type } : {};
+  return shouldConvertTile ? { type, isActive: true } : {};
   }));
 
 export const movePiece = (grid: Grid) => {
@@ -82,3 +82,8 @@ export const movePiece = (grid: Grid) => {
 
   return setActiveCells(grid, activeCells, 'i');
 };
+
+export const shouldPieceBecomeInactive = (grid: Grid) => {
+  const activeCells = getActiveCells(grid);
+  return activeCells.reduce((acc, curr) => acc || curr.y + 1 === grid.length, false);
+}
